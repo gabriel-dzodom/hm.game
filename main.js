@@ -23,5 +23,4 @@ function InitGame() {
     frame.appendChild(points.HtmlElement);
 }
 
-// put this project on Git
 InitGame();

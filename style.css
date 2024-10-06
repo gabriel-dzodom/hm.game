@@ -1,0 +1,27 @@
+.letterbox {
+    width: 36px;
+    font-size: xx-large;
+    text-align: center;
+    border: solid 1px black;
+    outline: none;
+}
+
+.letterbox-selected {
+    border: solid 2px blue;
+    outline: none;
+}
+
+.letterbox-successguess {
+    border: solid 4px green;
+    outline: none;
+}
+
+.letterbox-failguess {
+    border: solid 4px red;
+    outline: none;
+}
+
+.wordbox {
+    display: flex;
+    margin-bottom: 8px;
+}

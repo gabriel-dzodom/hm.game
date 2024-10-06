@@ -1,0 +1,77 @@
+Hangman game
+The game display a rare word with missing letters and the players has to guess the missing letters.
+The player wins a round once they guessed all the missing letters correctly without running out of guesses.
+The player wins the game once they have successfully guessed all the words in the dictionary.
+The player looses once they fail to guess all the missing letters of a word in a round
+	i.e. when they run out of guesses and there are still missing letters
+
+- The player has a [Guesses] limited number of guesses in a game but can gain more base on points [Points] accrued
+- There are three levels: Beginner([Level] = 1), Moderate([Level] = 2), Expert([Level] = 4)
+- The player is allowed [Hints] number of hints but can gain more depending how fast they guess the 
+	correct word.
+- The player has [Points] throughout the game. They earn [LetterRewards] when they guess a letter
+	correctly. They earn [WordRewards] when they guess a word correctly. They earn [TimeRewards]
+	based on how fast they guessed the whole word
+
+UI interactions (what happen when users click ui elements)
+
+Scenarios/Use cases
+1. start the game
+Show initial dialog
+	a. Press the start button
+	b. Launch Settings Dialog
+		* Turn on/off sound
+		* Select the level
+	c. Close the dialog
+	d. Go back to Step a
+
+2. Play the game
+Word to be guessed shown on the screen
+	a. Press ? panel to select it
+	b. Press the letter on the keyboard to enter the guess
+	c. Repeat step a and b until the whole word has been guessed or [Guesses] = 0
+
+3. Configure the game
+During gameplay
+	a. Click on Gear icon at the top of the UI
+		The game must pause at this point
+	b. Do Steps in 1b and 1c
+		The game resumes
+
+4. Restart Game
+During Gameplay
+	a. Press the restart icon at the top of the UI
+	
+5. Show Help
+Press the ? button to show the help dialog
+	If during gameplay, pause the game and resume after the dialog has been closed
+	
+6. Show the hint
+During the game play
+	Press/Click the hint icon to show the current word hint in a panel at the bottom
+	The hint icon must only be shown during a game, otherwise it is hidden
+	The hint panel gets reset in every round 
+
+Values/Settings
+level setting
+sound setting
+
+MaxGuesses = 8
+Guesses = (MaxGuesses / Level) + 1
+
+LetterRewards = 10 + (10 / Level) 
+WordRewards = 40 + (20 / Level)
+TimeRewards = 10 * (60 / (TimeInSeconds * Level))
+
+Rounds = 0 (this will increment as the game goes on)
+GainedGuesses: (At the end of a round)
+	if Points >=  50 * (2 ^ Rounds) * Level
+		Guess++		
+GainedHints: (At the end of a round)
+	if Time <= 80 * (5 - Level) - (5 * Rounds)
+		Hints++
+
+AmountOfLettersToBeRemoved
+0.4 + 0.1 * Level
+
+	

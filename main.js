@@ -1,5 +1,5 @@
 import { DownloadDictionary, Game, GetNextWord, PlayWord } from "./hm.js";
-import { PointsDisplay, TextDisplay, WordBox } from "./ui.js";
+import { LifeDisplay, ScoreDisplay, TextDisplay, WordBox } from "./ui.js";
 
 var frame;
 var currentWord;
@@ -16,8 +16,8 @@ function InitGame() {
     Game.NewGame();
     playingWord = new PlayWord(currentWord);
     const wordBox = new WordBox(playingWord); 
-    const lifeCounter = new TextDisplay("Life", "8");
-    const points = new PointsDisplay();
+    const lifeCounter = new LifeDisplay();
+    const points = new ScoreDisplay();
     frame.appendChild(wordBox.HtmlElement);
     frame.appendChild(lifeCounter.HtmlElement);
     frame.appendChild(points.HtmlElement);

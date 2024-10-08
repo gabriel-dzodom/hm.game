@@ -1,6 +1,6 @@
 import { ALPHABET, BLANK_LETTER } from "./constants.js";
 import { EventListener, EventManager, WordChangedEvent } from "./event.js";
-import { Game } from "./hm.js";
+import { Game, HmGame } from "./hm.js";
 
 export class UiElement {
     element = null;
@@ -167,8 +167,8 @@ export class WordBox extends UiElement {
             Game.OnLetterGuessedAction();
             EventManager.FireEventListeners(EventManager.OnSuccessLetterGuess, e);
         } else {
-            EventManager.FireEventListeners(EventManager.OnFailLetterGuess, e);
             Game.DecrementLife();
+            EventManager.FireEventListeners(EventManager.OnFailLetterGuess, e);
         }
     }
 
@@ -237,15 +237,28 @@ export class TextDisplay extends UiElement {
     }
 }
 
-export class PointsDisplay extends TextDisplay {
+export class ScoreDisplay extends TextDisplay {
     constructor() {
         super("Score", 0);
         EventManager.AddEventListener(
-            EventManager.OnSuccessLetterGuess, new EventListener(PointsDisplay.name, this.OnSuccessLetterGuessAction));
+            EventManager.OnSuccessLetterGuess, new EventListener(ScoreDisplay.name, this.OnSuccessLetterGuessAction));
     }
 
     OnSuccessLetterGuessAction = (e) => {
         this.Value = Game.Score;
+        this.HtmlElement;
+    }
+}
+
+export class LifeDisplay extends TextDisplay {
+    constructor() {
+        super("Hearts", Game.Life);
+        EventManager.AddEventListener(
+            EventManager.OnFailLetterGuess, new EventListener(LifeDisplay.name, this.OnFailLetterGuessAction));
+    }
+
+    OnFailLetterGuessAction = (e) => {
+        this.Value = Game.Life;
         this.HtmlElement;
     }
 }

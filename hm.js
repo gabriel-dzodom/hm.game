@@ -81,7 +81,7 @@ export class PlayWord {
     }
 }
 
-class HmGame {
+export class HmGame {
     #level = LEVEL_NORMAL;
     #soundOn = true;
     #over = false;

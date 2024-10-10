@@ -21,6 +21,20 @@ export class WordChangedEvent extends Event {
     get Position() { return this.#position; }
 }
 
+export class GameOverEvent extends Event {
+    #gameState = -1;
+
+    constructor(gameState) {
+        super(null)
+        this.#gameState = gameState;
+    }
+
+    get GameState() { return this.#gameState; }
+
+    static get WIN() { return 1; }
+    static get LOSE() { return 0; }
+}
+
 export class EventListener {
     #key = "";
     #action = null;
@@ -41,6 +55,7 @@ class EventManagerClass {
     #onWordChanged = "wordchangedevent";
     #onSuccessLetterGuess = "successletterguessevent";
     #onFailLetterGuess = "failletterguessevent";
+    #onGameOver = "gameoverevent";
 
     #eventListeners = new Map();
     constructor() {}
@@ -69,6 +84,7 @@ class EventManagerClass {
     get OnWordChanged() { return this.#onWordChanged; }
     get OnSuccessLetterGuess() { return this.#onSuccessLetterGuess; }
     get OnFailLetterGuess() { return this.#onFailLetterGuess; }
+    get OnGameOver() { return this.#onGameOver; }
 
 }
 

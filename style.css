@@ -24,4 +24,9 @@
 .wordbox {
     display: flex;
     margin-bottom: 8px;
+    padding: 4px;
+}
+
+.wordbox-gameover {
+    border: solid 2px red;
 }

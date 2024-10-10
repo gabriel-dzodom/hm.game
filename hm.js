@@ -84,7 +84,7 @@ export class PlayWord {
 export class HmGame {
     #level = LEVEL_NORMAL;
     #soundOn = true;
-    #over = false;
+    #over = true;
 
     #life = HmGame.MAX_LIFE;
     #score = 0;
@@ -123,15 +123,6 @@ export class HmGame {
         this.#wordGuessed++;
     }
 
-    IncrementLife = () => { this.#life++ ;}
-    DecrementLife = () => {
-        if (this.#life === 1) {
-            // Fire Game Over Event
-            return;
-        }
-        this.#life--;
-    }
-
     get SecondsElapsed() { return this.#secondsElapsed; }
     set SecondsElapsed(secondsElapsed) { this.#secondsElapsed = secondsElapsed; }
 
@@ -139,6 +130,7 @@ export class HmGame {
     set Score(score) { this.#score = score; }
 
     get Life() { return this.#life; }
+    set Life(life) { this.#life = life; }
 
     get Hints() { return this.#hints; }
     set Hints(hints) { this.#hints = hints; }

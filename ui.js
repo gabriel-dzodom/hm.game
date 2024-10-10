@@ -1,5 +1,5 @@
 import { ALPHABET, BLANK_LETTER } from "./constants.js";
-import { EventListener, EventManager, WordChangedEvent } from "./event.js";
+import { EventListener, EventManager, GameOverEvent, WordChangedEvent } from "./event.js";
 import { Game, HmGame } from "./hm.js";
 
 export class UiElement {
@@ -157,6 +157,18 @@ export class WordBox extends UiElement {
         EventManager.AddEventListener(
             EventManager.OnWordChanged, 
             new EventListener(WordBox.name, this.OnWordChangedAction));
+
+        EventManager.AddEventListener(
+            EventManager.OnGameOver,
+            new EventListener(WordBox.name, this.OnGameOverAction)
+        );
+    }
+
+    OnGameOverAction = (e) => {
+        this.#letterBoxes.forEach(lb => {
+            lb.UnSelect();
+        });
+        this.CssClass = `${this.CssClass} wordbox-gameover`;
     }
 
     OnWordChangedAction = (e) => {
@@ -167,7 +179,12 @@ export class WordBox extends UiElement {
             Game.OnLetterGuessedAction();
             EventManager.FireEventListeners(EventManager.OnSuccessLetterGuess, e);
         } else {
-            Game.DecrementLife();
+            Game.Life--;
+            if (Game.Life === 0) {
+                Game.Over = true;
+                let goe = new GameOverEvent(GameOverEvent.LOSE);
+                EventManager.FireEventListeners(EventManager.OnGameOver, goe);
+            }
             EventManager.FireEventListeners(EventManager.OnFailLetterGuess, e);
         }
     }

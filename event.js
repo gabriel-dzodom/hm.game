@@ -56,6 +56,7 @@ class EventManagerClass {
     #onSuccessLetterGuess = "successletterguessevent";
     #onFailLetterGuess = "failletterguessevent";
     #onGameOver = "gameoverevent";
+    #onGameStarted = "gamestartedevent"
 
     #eventListeners = new Map();
     constructor() {}
@@ -85,6 +86,7 @@ class EventManagerClass {
     get OnSuccessLetterGuess() { return this.#onSuccessLetterGuess; }
     get OnFailLetterGuess() { return this.#onFailLetterGuess; }
     get OnGameOver() { return this.#onGameOver; }
+    get OnGameStarted() { return this.#onGameStarted; }
 
 }
 

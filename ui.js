@@ -104,7 +104,7 @@ export class LetterBox extends UiElement {
             if(this.#onLetterChangeAction) {
                 this.#onLetterChangeAction(inputLetter);
             }
-        }
+        }    
     }
 
     get Letter() { return this.element.getAttribute("value"); }
@@ -195,15 +195,17 @@ export class WordBox extends UiElement {
             this.#playWord.Letters.forEach((letter, index) => {
                 var letterBox = new LetterBox(letter, `${index}`);
                 letterBox.OnClick = (e) => {
-                    if (!letterBox.IsSelected() && 
+                    if (!Game.Over) {
+                        if (!letterBox.IsSelected() && 
                         (letterBox.State === LetterBox.BLANK || letterBox.State === LetterBox.GUESSED_FAIL)) {
-                        this.#letterBoxes.forEach(lb => {
-                            if (lb.IsSelected()) {
-                                lb.UnSelect();
-                                return;
-                            }
-                        });
-                        letterBox.Select();
+                            this.#letterBoxes.forEach(lb => {
+                                if (lb.IsSelected()) {
+                                    lb.UnSelect();
+                                    return;
+                                }
+                            });
+                            letterBox.Select();
+                        }
                     }
                 };
 
@@ -256,7 +258,7 @@ export class TextDisplay extends UiElement {
 
 export class ScoreDisplay extends TextDisplay {
     constructor() {
-        super("Score", 0);
+        super("Score", "-");
         EventManager.AddEventListener(
             EventManager.OnSuccessLetterGuess, new EventListener(ScoreDisplay.name, this.OnSuccessLetterGuessAction));
     }
@@ -269,7 +271,7 @@ export class ScoreDisplay extends TextDisplay {
 
 export class LifeDisplay extends TextDisplay {
     constructor() {
-        super("Hearts", Game.Life);
+        super("Hearts", "-");
         EventManager.AddEventListener(
             EventManager.OnFailLetterGuess, new EventListener(LifeDisplay.name, this.OnFailLetterGuessAction));
     }
@@ -278,4 +280,67 @@ export class LifeDisplay extends TextDisplay {
         this.Value = Game.Life;
         this.HtmlElement;
     }
+}
+
+export class Button extends UiElement {
+    #text = "";
+
+    constructor(text, title, id="") {
+        super("button", id);
+        this.setAttribute("title", title);
+        this.Text = text;
+    }
+
+    get Text() { return this.#text; }
+    set Text(text) { this.#text = text; }
+
+    get HtmlElement() {
+        const textNode = document.createTextNode(this.Text);
+        const htmlElement = super.HtmlElement;
+        htmlElement.appendChild(textNode);
+        return htmlElement;
+    }
+}
+
+export class ButtonMenu extends UiElement {
+
+    #startButton = null;
+    #quitButton = null;
+    #resetButton = null;
+
+    constructor(id="") {
+        super("div", id);
+        
+        this.#startButton = new Button("Start", "Start Game", "startButton");
+        this.#startButton.OnClick = this.OnStartGameAction;
+
+        this.#quitButton = new Button("Quit", "Quit Game", "quitButton");
+        this.#quitButton.OnClick = this.OnQuitGameAction;
+
+        this.#resetButton = new Button("Reset", "Reset Game", "resetButton");
+        this.#resetButton.OnClick = this.OnResetGameAction;
+
+        this.CssClass = "buttonmenu";
+    }
+
+    OnStartGameAction = (e) => {
+        alert("Start the Game");
+    }
+
+    OnResetGameAction = (e) => {
+        alert("Reset the Game");
+    }
+
+    OnQuitGameAction = (e) => {
+        alert("Quit the Game");
+    }
+
+    get HtmlElement() {
+        const container = super.HtmlElement;
+        container.appendChild(this.#startButton.HtmlElement);
+        container.appendChild(this.#resetButton.HtmlElement);
+        container.appendChild(this.#quitButton.HtmlElement);
+        return container;
+    }
+
 }

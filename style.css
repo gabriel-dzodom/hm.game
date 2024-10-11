@@ -30,3 +30,9 @@
 .wordbox-gameover {
     border: solid 2px red;
 }
+
+.buttonmenu {
+    display: flex;
+    gap: 4px;
+    padding-bottom: 4px;
+}

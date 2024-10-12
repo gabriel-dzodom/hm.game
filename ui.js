@@ -1,4 +1,5 @@
 import { ALPHABET, BLANK_LETTER } from "./constants.js";
+import { Dictionary } from "./dictionary.js";
 import { EventListener, EventManager, GameOverEvent, WordChangedEvent } from "./event.js";
 import { Game, HmGame } from "./hm.js";
 
@@ -162,6 +163,23 @@ export class WordBox extends UiElement {
             EventManager.OnGameOver,
             new EventListener(WordBox.name, this.OnGameOverAction)
         );
+
+        EventManager.AddEventListener(
+            EventManager.OnGameStarted,
+            new EventListener(WordBox.name, this.OnGameStartedAction)
+        );
+    }
+
+    OnGameStartedAction = (e) => {
+        if(!Dictionary.HasNextWord()) {
+            // think about what happens when the game started and there is no word left!
+        }
+        const nextWord = Dictionary.GetNextWord();
+        if (nextWord == null) {
+            throw new Error("Next Word is NULL!");
+        }
+
+        this.Word = nextWord;
     }
 
     OnGameOverAction = (e) => {
@@ -259,8 +277,18 @@ export class TextDisplay extends UiElement {
 export class ScoreDisplay extends TextDisplay {
     constructor() {
         super("Score", "-");
+
+        const listenerKey = ScoreDisplay.name;
         EventManager.AddEventListener(
-            EventManager.OnSuccessLetterGuess, new EventListener(ScoreDisplay.name, this.OnSuccessLetterGuessAction));
+            EventManager.OnSuccessLetterGuess, new EventListener(listenerKey, this.OnSuccessLetterGuessAction));
+
+        EventManager.AddEventListener(
+            EventManager.OnGameStarted, new EventListener(listenerKey, this.OnGameStartedAction));
+    }
+
+    OnGameStartedAction = (e) => {
+        this.Value = Game.Score;
+        this.HtmlElement;
     }
 
     OnSuccessLetterGuessAction = (e) => {
@@ -272,8 +300,18 @@ export class ScoreDisplay extends TextDisplay {
 export class LifeDisplay extends TextDisplay {
     constructor() {
         super("Hearts", "-");
+
+        const listenerKey = LifeDisplay.name;
         EventManager.AddEventListener(
-            EventManager.OnFailLetterGuess, new EventListener(LifeDisplay.name, this.OnFailLetterGuessAction));
+            EventManager.OnFailLetterGuess, new EventListener(listenerKey, this.OnFailLetterGuessAction));
+
+        EventManager.AddEventListener(
+            EventManager.OnGameStarted, new EventListener(listenerKey, this.OnGameStartedAction));
+    }
+
+    OnGameStartedAction = (e) => {
+        this.Value = Game.Life;
+        this.HtmlElement;
     }
 
     OnFailLetterGuessAction = (e) => {
@@ -324,7 +362,7 @@ export class ButtonMenu extends UiElement {
     }
 
     OnStartGameAction = (e) => {
-        alert("Start the Game");
+        Game.NewGame();
     }
 
     OnResetGameAction = (e) => {

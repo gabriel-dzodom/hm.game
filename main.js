@@ -12,7 +12,7 @@ function InitGame() {
     }
 
     DownloadDictionary();
-    currentWord = GetNextWord()
+    currentWord = "PRESS START";
     //Game.NewGame();
     playingWord = new PlayWord(currentWord);
     const buttonMenu = new ButtonMenu("buttonMenu");

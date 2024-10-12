@@ -1,15 +1,5 @@
 import { BLANK_LETTER, LEVEL_NORMAL } from "./constants.js";
 
-export function DownloadDictionary() {}
-
-export function GetNextWord() {
-    return "CATERPILLAR";
-}
-
-export function BuildPlayingWord() {
-}
-
-
 export class PlayWord {
     #value = "";
     #letters = [];
@@ -21,7 +11,9 @@ export class PlayWord {
     Update(value) {
         this.#value = value;
         this.#letters = value.split('');
-        this.#randomizeBlankLetters();
+        if (!Game.Over) {
+            this.#randomizeBlankLetters();
+        }
     }
 
     Evaluate() {

@@ -1,5 +1,5 @@
-import { DownloadDictionary, Game, GetNextWord, PlayWord } from "./hm.js";
-import { ButtonMenu, LifeDisplay, ScoreDisplay, TextDisplay, WordBox } from "./ui.js";
+import { PlayWord } from "./hm.js";
+import { ButtonMenu, LifeDisplay, ScoreDisplay, WordBox } from "./ui.js";
 
 var frame;
 var currentWord;
@@ -11,7 +11,6 @@ function InitGame() {
         throw new Error('Game Frame does not exist!');
     }
 
-    DownloadDictionary();
     currentWord = "PRESS START";
     //Game.NewGame();
     playingWord = new PlayWord(currentWord);

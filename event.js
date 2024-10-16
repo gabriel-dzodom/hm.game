@@ -23,13 +23,22 @@ export class WordChangedEvent extends Event {
 
 export class GameOverEvent extends Event {
     #gameState = -1;
+    #message = "";
 
     constructor(gameState) {
         super(null)
         this.#gameState = gameState;
+        if(this.#gameState === GameOverEvent.LOSE) {
+            this.#message = "YOU LOSE";
+        } else if (this.#gameState === GameOverEvent.WIN) {
+            this.#message = "YOU WIN";
+        } else {
+            throw new Error("Invalid Game State Value: " + this.#gameState);
+        }
     }
 
     get GameState() { return this.#gameState; }
+    get Message() { return this.#message; }
 
     static get WIN() { return 1; }
     static get LOSE() { return 0; }
@@ -53,6 +62,7 @@ export class EventListener {
 
 class EventManagerClass {
     #onWordChanged = "wordchangedevent";
+    #onWordGuessed = "wordguessedevent";
     #onSuccessLetterGuess = "successletterguessevent";
     #onFailLetterGuess = "failletterguessevent";
     #onGameOver = "gameoverevent";
@@ -83,6 +93,7 @@ class EventManagerClass {
     }
 
     get OnWordChanged() { return this.#onWordChanged; }
+    get OnWordGuessed() { return this.#onWordGuessed; }
     get OnSuccessLetterGuess() { return this.#onSuccessLetterGuess; }
     get OnFailLetterGuess() { return this.#onFailLetterGuess; }
     get OnGameOver() { return this.#onGameOver; }

@@ -27,8 +27,12 @@
     padding: 4px;
 }
 
-.wordbox-gameover {
+.wordbox-gameover-lose {
     border: solid 2px red;
+}
+
+.wordbox-gameover-win {
+    border: solid 2px green;
 }
 
 .buttonmenu {

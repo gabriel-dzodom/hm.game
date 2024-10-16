@@ -1,7 +1,7 @@
 import { ALPHABET, BLANK_LETTER } from "./constants.js";
 import { Dictionary } from "./dictionary.js";
 import { EventListener, EventManager, GameOverEvent, WordChangedEvent } from "./event.js";
-import { Game, HmGame } from "./hm.js";
+import { Game, PlayWord } from "./hm.js";
 
 export class UiElement {
     element = null;
@@ -171,23 +171,30 @@ export class WordBox extends UiElement {
     }
 
     OnGameStartedAction = (e) => {
-        if(!Dictionary.HasNextWord()) {
-            // think about what happens when the game started and there is no word left!
-        }
         const nextWord = Dictionary.GetNextWord();
         if (nextWord == null) {
             throw new Error("Next Word is NULL!");
         }
 
-        this.Word = nextWord;
+        this.Word = new PlayWord(nextWord);
     }
 
     OnGameOverAction = (e) => {
         this.#letterBoxes.forEach(lb => {
             lb.UnSelect();
         });
-        this.CssClass = `${this.CssClass} wordbox-gameover`;
+
+        if(e.GameState == GameOverEvent.LOSE) {
+            this.CssClass = `${this.CssClass} wordbox-gameover-lose`;
+        } else {
+            this.CssClass = `${this.CssClass} wordbox-gameover-win`;
+        }
+        this.Word = new PlayWord(e.Message);
     }
+
+    // implement the wordguessed event listener on the heart and score display
+    // implement the level dropdown, the clock,
+    // test that the scores are being computed correctly
 
     OnWordChangedAction = (e) => {
         let letter = e.Letter;
@@ -196,6 +203,21 @@ export class WordBox extends UiElement {
         if(this.Word.Value.charAt(index) === letter) {
             Game.OnLetterGuessedAction();
             EventManager.FireEventListeners(EventManager.OnSuccessLetterGuess, e);
+            
+            const successfulGuess = this.Word.Evaluate();
+            if(successfulGuess) {
+                Game.OnWordGuessedAction();
+                EventManager.FireEventListeners(EventManager.OnWordGuessed, e);
+
+                if(Dictionary.HasNextWord()) {
+                    this.Word = new PlayWord(Dictionary.GetNextWord());
+                } else  {
+                    Game.Over = true;
+                    let goe = new GameOverEvent(GameOverEvent.WIN);
+                    EventManager.FireEventListeners(EventManager.OnGameOver, goe);
+                }
+            }
+
         } else {
             Game.Life--;
             if (Game.Life === 0) {
@@ -237,6 +259,7 @@ export class WordBox extends UiElement {
 
     get HtmlElement() {
         const container = super.HtmlElement;
+        container.replaceChildren();
         for(let letterBox of this.#letterBoxes) {
             container.appendChild(letterBox.HtmlElement);
         }
@@ -247,6 +270,7 @@ export class WordBox extends UiElement {
     set Word(playWord) {
         this.#playWord = playWord;
         this.#buildWordBox(); 
+        this.HtmlElement;
     }
 
 }
@@ -287,7 +311,7 @@ export class ScoreDisplay extends TextDisplay {
     }
 
     OnGameStartedAction = (e) => {
-        this.Value = Game.Score;
+        this.Value = 0;
         this.HtmlElement;
     }
 
@@ -363,6 +387,7 @@ export class ButtonMenu extends UiElement {
 
     OnStartGameAction = (e) => {
         Game.NewGame();
+        EventManager.FireEventListeners(EventManager.OnGameStarted, e);
     }
 
     OnResetGameAction = (e) => {
@@ -376,7 +401,6 @@ export class ButtonMenu extends UiElement {
     get HtmlElement() {
         const container = super.HtmlElement;
         container.appendChild(this.#startButton.HtmlElement);
-        container.appendChild(this.#resetButton.HtmlElement);
         container.appendChild(this.#quitButton.HtmlElement);
         return container;
     }

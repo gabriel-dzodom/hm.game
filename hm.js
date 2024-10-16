@@ -1,4 +1,5 @@
 import { BLANK_LETTER, LEVEL_NORMAL } from "./constants.js";
+import { Dictionary } from "./dictionary.js";
 
 export class PlayWord {
     #value = "";
@@ -90,9 +91,12 @@ export class HmGame {
         this.#level = level;
         this.#soundOn = soundOn;
         this.#over = false;
+        this.#score = 0;
 
         this.#life = Math.round(HmGame.MAX_LIFE / level.Value) + 1;
         this.#hints = Math.round(HmGame.MAX_HINTS / level.Value) + 1;
+
+        Dictionary.NewGame();
     }
 
     OnLetterGuessedAction = () => {

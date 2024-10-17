@@ -19,10 +19,10 @@ class Level {
 
 const BLANK_LETTER = "-";
 
-const LEVEL_NORMAL = new Level(1, "normal");
-const LEVEL_HARD = new Level(2, "hard");
-const LEVEL_HARDER = new Level(4, "harder");
-const LEVEL_HARDEST  = new Level(8, "very hard");
+const LEVEL_NORMAL = new Level(2, "NORMAL");
+const LEVEL_HARD = new Level(4, "HARD");
+const LEVEL_HARDER = new Level(6, "HARDER");
+const LEVEL_HARDEST  = new Level(8, "HARDEST");
 
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 

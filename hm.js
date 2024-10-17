@@ -23,7 +23,8 @@ export class PlayWord {
     }
 
     #randomizeBlankLetters() {
-        const percentToBeRemoved = 0.4 + 0.1 * Game.Level.Value;
+        const percentToBeRemoved = 0.2 + 0.1 * Game.Level.Value;
+        
         
         const amountToBeRemoved = Math.round(this.#letters.length * percentToBeRemoved);
         const maxIndex = this.#letters.length - 1;
@@ -81,20 +82,21 @@ export class HmGame {
 
     #life = HmGame.MAX_LIFE;
     #score = 0;
-    #wordGuessed = 0;
-    #secondsElapsed = 1;
+    #guessedWordCount = 0;
+    #secondsElapsed = 0;
     #hints = HmGame.MAX_HINTS;
 
     constructor() { }
 
-    NewGame = (level=LEVEL_NORMAL, soundOn=true) => {
-        this.#level = level;
+    NewGame = (soundOn=true) => {
         this.#soundOn = soundOn;
         this.#over = false;
         this.#score = 0;
+        this.#guessedWordCount = 0;
+        this.#secondsElapsed = 1;
 
-        this.#life = Math.round(HmGame.MAX_LIFE / level.Value) + 1;
-        this.#hints = Math.round(HmGame.MAX_HINTS / level.Value) + 1;
+        this.#life = Math.round(HmGame.MAX_LIFE / this.#level.Value) + 1;
+        this.#hints = Math.round(HmGame.MAX_HINTS / this.#level.Value) + 1;
 
         Dictionary.NewGame();
     }
@@ -107,16 +109,16 @@ export class HmGame {
         let timeRewards = Math.round(10.0 * (60.0 / (this.#secondsElapsed * this.Level.Value)));
         this.Score += wordRewards + timeRewards;
 
-        let lifeBonusThreshold = Math.round(50 * Math.pow(2, this.#wordGuessed) * this.Level.Value);
+        let lifeBonusThreshold = Math.round(50 * Math.pow(2, this.#guessedWordCount) * this.Level.Value);
         if (this.Score >= lifeBonusThreshold) {
             this.Life++;
         }
 
-        let hintBonusThreshold = Math.round(80 * (5 - this.Level.Value) - (5 * this.#wordGuessed));
-        if (this.Hints <= hintBonusThreshold) {
+        let hintBonusThreshold = Math.round(80 * (5 - this.Level.Value) - (5 * this.#guessedWordCount));
+        if (this.SecondsElapsed <= hintBonusThreshold) {
             this.Hints++;
         }
-        this.#wordGuessed++;
+        this.#guessedWordCount++;
     }
 
     get SecondsElapsed() { return this.#secondsElapsed; }

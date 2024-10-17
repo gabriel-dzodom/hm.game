@@ -1,4 +1,4 @@
-import { ALPHABET, BLANK_LETTER } from "./constants.js";
+import { ALPHABET, BLANK_LETTER, LEVEL_HARD, LEVEL_HARDER, LEVEL_HARDEST, LEVEL_NORMAL } from "./constants.js";
 import { Dictionary } from "./dictionary.js";
 import { EventListener, EventManager, GameOverEvent, WordChangedEvent } from "./event.js";
 import { Game, PlayWord } from "./hm.js";
@@ -192,7 +192,6 @@ export class WordBox extends UiElement {
         this.Word = new PlayWord(e.Message);
     }
 
-    // implement the wordguessed event listener on the heart and score display
     // implement the level dropdown, the clock,
     // test that the scores are being computed correctly
 
@@ -304,18 +303,17 @@ export class ScoreDisplay extends TextDisplay {
 
         const listenerKey = ScoreDisplay.name;
         EventManager.AddEventListener(
-            EventManager.OnSuccessLetterGuess, new EventListener(listenerKey, this.OnSuccessLetterGuessAction));
+            EventManager.OnSuccessLetterGuess, new EventListener(listenerKey, this.UpdateScore));
 
         EventManager.AddEventListener(
-            EventManager.OnGameStarted, new EventListener(listenerKey, this.OnGameStartedAction));
+            EventManager.OnGameStarted, new EventListener(listenerKey, this.UpdateScore));
+
+        EventManager.AddEventListener(
+            EventManager.OnWordGuessed, new EventListener(listenerKey, this.UpdateScore)
+        );
     }
 
-    OnGameStartedAction = (e) => {
-        this.Value = 0;
-        this.HtmlElement;
-    }
-
-    OnSuccessLetterGuessAction = (e) => {
+    UpdateScore = (e) => {
         this.Value = Game.Score;
         this.HtmlElement;
     }
@@ -327,18 +325,17 @@ export class LifeDisplay extends TextDisplay {
 
         const listenerKey = LifeDisplay.name;
         EventManager.AddEventListener(
-            EventManager.OnFailLetterGuess, new EventListener(listenerKey, this.OnFailLetterGuessAction));
+            EventManager.OnFailLetterGuess, new EventListener(listenerKey, this.UpdateLife));
 
         EventManager.AddEventListener(
-            EventManager.OnGameStarted, new EventListener(listenerKey, this.OnGameStartedAction));
+            EventManager.OnGameStarted, new EventListener(listenerKey, this.UpdateLife));
+
+        EventManager.AddEventListener(
+            EventManager.OnWordGuessed, new EventListener(listenerKey, this.UpdateLife)
+        );    
     }
 
-    OnGameStartedAction = (e) => {
-        this.Value = Game.Life;
-        this.HtmlElement;
-    }
-
-    OnFailLetterGuessAction = (e) => {
+    UpdateLife = (e) => {
         this.Value = Game.Life;
         this.HtmlElement;
     }
@@ -405,4 +402,34 @@ export class ButtonMenu extends UiElement {
         return container;
     }
 
+}
+
+export class LevelSelect extends UiElement {
+    constructor(){
+        super("div");
+    }
+
+    get HtmlElement() {
+        const container = super.HtmlElement;
+        const label = document.createElement("label");        
+        label.setAttribute("for", "levelselect");
+        label.innerHTML = `<b>Level: </b>`;
+        container.appendChild(label);
+
+        const levelOptions = [LEVEL_NORMAL, LEVEL_HARD, LEVEL_HARDER, LEVEL_HARDEST];
+        const select = document.createElement("select");
+        select.id = "levelselect";
+        levelOptions.forEach(level => {
+            const option = document.createElement("option");
+            option.setAttribute("value", level.Value);
+            option.textContent = level.Name;
+            select.appendChild(option);
+        });
+        select.value = Game.Level.Value;
+        select.onchange = (e) => {
+            Game.Level = levelOptions[select.selectedIndex];
+        };
+        container.appendChild(select);
+        return container;
+    }
 }

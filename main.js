@@ -1,5 +1,5 @@
 import { PlayWord } from "./hm.js";
-import { ButtonMenu, LifeDisplay, ScoreDisplay, WordBox } from "./ui.js";
+import { ButtonMenu, LevelSelect, LifeDisplay, ScoreDisplay, WordBox } from "./ui.js";
 
 var frame;
 var currentWord;
@@ -22,6 +22,7 @@ function InitGame() {
     frame.appendChild(wordBox.HtmlElement);
     frame.appendChild(lifeCounter.HtmlElement);
     frame.appendChild(points.HtmlElement);
+    frame.appendChild(new LevelSelect().HtmlElement);
 }
 
 InitGame();

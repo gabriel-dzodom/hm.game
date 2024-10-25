@@ -176,6 +176,7 @@ export class WordBox extends UiElement {
             throw new Error("Next Word is NULL!");
         }
 
+        this.CssClass = 'wordbox';
         this.Word = new PlayWord(nextWord);
     }
 
@@ -192,7 +193,8 @@ export class WordBox extends UiElement {
         this.Word = new PlayWord(e.Message);
     }
 
-    // implement the level dropdown, the clock,
+    // implement the clock,
+    // implement the hint button
     // test that the scores are being computed correctly
 
     OnWordChangedAction = (e) => {
@@ -431,5 +433,50 @@ export class LevelSelect extends UiElement {
         };
         container.appendChild(select);
         return container;
+    }
+}
+
+export class Clock extends TextDisplay {
+    #minutes = 0;
+    #seconds = 0;
+    #timerId = 0;
+
+    constructor() {
+        super("Clock", "0:00");
+        this.#renderClock();
+
+        const listenerKey = Clock.name;
+
+        EventManager.AddEventListener(
+            EventManager.OnGameStarted, new EventListener(listenerKey, this.#resetClock)
+        );
+        EventManager.AddEventListener(
+            EventManager.OnGameOver, new EventListener(listenerKey, ()=> {
+                clearInterval(this.#timerId);
+            })
+        );
+    }
+
+    #resetClock = () => {
+        clearInterval(this.#timerId)
+        this.#minutes = 0;
+        this.#seconds = 0;
+        this.#timerId = setInterval(this.#timer, 1000);
+    }
+
+    #timer = () => {
+        
+        this.#seconds++;
+        this.#renderClock();
+        if (this.#seconds >= 59) {
+            this.#seconds = 0;
+            this.#minutes++;
+        }
+        Game.SecondsElapsed++;
+    }
+
+    #renderClock = () => {
+        this.Value = `${this.#minutes}:${Number(this.#seconds).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})}`;
+        super.HtmlElement;
     }
 }

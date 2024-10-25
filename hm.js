@@ -95,6 +95,7 @@ export class HmGame {
         this.#guessedWordCount = 0;
         this.#secondsElapsed = 1;
 
+        // adjust these formulas
         this.#life = Math.round(HmGame.MAX_LIFE / this.#level.Value) + 1;
         this.#hints = Math.round(HmGame.MAX_HINTS / this.#level.Value) + 1;
 

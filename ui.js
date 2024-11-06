@@ -42,6 +42,11 @@ export class UiElement {
     set OnClick(onClickAction = null) {
         this.element.onclick = onClickAction;      
     }
+
+    get Disabled() { return this.element.disabled; }
+    set Disabled(disabled) {
+        this.element.disabled = disabled;
+    }
 }
 
 export class LetterBox extends UiElement {
@@ -193,8 +198,6 @@ export class WordBox extends UiElement {
         this.Word = new PlayWord(e.Message);
     }
 
-    // implement the clock,
-    // implement the hint button
     // test that the scores are being computed correctly
 
     OnWordChangedAction = (e) => {
@@ -344,21 +347,20 @@ export class LifeDisplay extends TextDisplay {
 }
 
 export class Button extends UiElement {
-    #text = "";
+    #textNode = null;
 
     constructor(text, title, id="") {
         super("button", id);
         this.setAttribute("title", title);
-        this.Text = text;
+        this.#textNode = document.createTextNode(text);
     }
 
-    get Text() { return this.#text; }
-    set Text(text) { this.#text = text; }
+    get Text() { return this.#textNode.textContent; }
+    set Text(text) { this.#textNode.textContent = text; }
 
     get HtmlElement() {
-        const textNode = document.createTextNode(this.Text);
         const htmlElement = super.HtmlElement;
-        htmlElement.appendChild(textNode);
+        htmlElement.appendChild(this.#textNode);
         return htmlElement;
     }
 }
@@ -478,5 +480,50 @@ export class Clock extends TextDisplay {
     #renderClock = () => {
         this.Value = `${this.#minutes}:${Number(this.#seconds).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})}`;
         super.HtmlElement;
+    }
+}
+
+export class HintButton extends UiElement {
+    #button = null;
+
+    constructor() {
+        super("div");
+        this.#button = new Button();
+        this.#button.OnClick = this.OnUseHint;
+        this.#button.Text = "Hints: -";
+        this.#button.Disabled = true;
+
+        const listenerKey = HintButton.name;
+
+        EventManager.AddEventListener(
+            EventManager.OnGameStarted, new EventListener(listenerKey, () => {
+                this.#button.Disabled = false;
+                this.UpdateButton();
+            })
+        );
+        EventManager.AddEventListener(
+            EventManager.OnGameOver, new EventListener(listenerKey, () => {
+                this.#button.Disabled = true;
+            })
+        );
+
+    }
+
+    UpdateButton = () => {
+        this.#button.Text = `Hints: ${Game.Hints}`;
+    }
+
+    OnUseHint = (e) => {
+        if (Game.Hints >= 1) {
+            Game.Hints--;
+            this.UpdateButton();
+        } 
+        this.#button.Disabled = Game.Hints === 0;
+    }
+
+    get HtmlElement() {
+        const container = super.HtmlElement;
+        container.appendChild(this.#button.HtmlElement);
+        return container;
     }
 }

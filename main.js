@@ -1,5 +1,5 @@
 import { PlayWord } from "./hm.js";
-import { ButtonMenu, Clock, LevelSelect, LifeDisplay, ScoreDisplay, WordBox } from "./ui.js";
+import { ButtonMenu, Clock, HintButton, LevelSelect, LifeDisplay, ScoreDisplay, WordBox } from "./ui.js";
 
 var frame;
 var currentWord;
@@ -24,6 +24,7 @@ function InitGame() {
     frame.appendChild(points.HtmlElement);
     frame.appendChild(new LevelSelect().HtmlElement);
     frame.appendChild(new Clock().HtmlElement);
+    frame.appendChild(new HintButton().HtmlElement);
 }
 
 InitGame();

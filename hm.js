@@ -106,10 +106,15 @@ export class HmGame {
         this.Score += Math.round(10.0 + (10.0 / this.Level.Value));
     }
     OnWordGuessedAction = () => {
+        console.log(`Round: ${this.#guessedWordCount}`);
+        console.log(`Score: ${this.Score}`);
+        console.log(`Seconds: ${this.#secondsElapsed}`);
+
         let wordRewards = Math.round(40.0 + (20.0 / this.Level.Value));
         let timeRewards = Math.round(10.0 * (60.0 / (this.#secondsElapsed * this.Level.Value)));
-        this.Score += wordRewards + timeRewards;
 
+        this.Score += wordRewards + timeRewards;
+        
         let lifeBonusThreshold = Math.round(50 * Math.pow(2, this.#guessedWordCount) * this.Level.Value);
         if (this.Score >= lifeBonusThreshold) {
             this.Life++;
@@ -120,6 +125,12 @@ export class HmGame {
             this.Hints++;
         }
         this.#guessedWordCount++;
+
+        console.log(`Word Rewards: ${wordRewards}`);
+        console.log(`Time Rewards: ${timeRewards}`);
+        console.log(`Life Threshold: ${lifeBonusThreshold}`);
+        console.log(`Hint Threshold: ${hintBonusThreshold}`);
+
     }
 
     get SecondsElapsed() { return this.#secondsElapsed; }
